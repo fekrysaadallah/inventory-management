@@ -13,7 +13,7 @@ A backend system for managing inventory across multiple warehouses and reserving
 
 ## Architecture
 
-<img src="architecture.png" alt="Architecture Diagram" width="600"/>
+<img src="architecture.png" alt="Architecture Diagram" />
 
 ## API Endpoints
 
