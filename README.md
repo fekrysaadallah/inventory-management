@@ -28,6 +28,8 @@ A backend system for managing inventory across multiple warehouses and reserving
 
 ## Data Model
 
+<img src="db-design.webp" alt="Data Model Diagram" />
+
 ## Running Locally
 
 - Install Docker with the Compose plugin
