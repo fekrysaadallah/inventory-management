@@ -36,7 +36,10 @@ A backend system for managing inventory across multiple warehouses and reserving
 - Copy the `.env.example` file to `.env` and update the environment variables as needed.
 
 ```sh
-docker compose up --build -d
+docker compose up -d database
+docker compose build backend
+docker compose run --rm backend yarn db:migrate:prod
+docker compose up -d
 ```
 
 The API is available at <http://localhost:3000>.

@@ -1,0 +1,961 @@
+{
+  "namespaces": [
+    "public"
+  ],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "sku": {
+          "name": "sku",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "on_hand": {
+          "name": "on_hand",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": "0",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "reserved": {
+          "name": "reserved",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": "0",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": "CURRENT_TIMESTAMP",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        }
+      },
+      "name": "inventory",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "sku",
+            "warehouse_id"
+          ],
+          "composite": true,
+          "constraint": false,
+          "keyName": "inventory_pkey",
+          "unique": true,
+          "primary": true
+        },
+        {
+          "columnNames": [
+            "warehouse_id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "inventory_warehouse_id_index",
+          "unique": false,
+          "primary": false
+        }
+      ],
+      "checks": [
+        {
+          "name": "inventory_on_hand_nonnegative",
+          "columnName": "on_hand",
+          "definition": "CHECK ((on_hand >= 0))",
+          "expression": "on_hand >= 0"
+        },
+        {
+          "name": "inventory_reserved_nonnegative",
+          "columnName": "reserved",
+          "definition": "CHECK ((reserved >= 0))",
+          "expression": "reserved >= 0"
+        },
+        {
+          "name": "inventory_reserved_within_on_hand",
+          "columnName": "on_hand",
+          "definition": "CHECK ((reserved <= on_hand))",
+          "expression": "reserved <= on_hand"
+        }
+      ],
+      "foreignKeys": {
+        "inventory_sku_foreign": {
+          "columnNames": [
+            "sku"
+          ],
+          "constraintName": "inventory_sku_foreign",
+          "localTableName": "public.inventory",
+          "referencedTableName": "public.product",
+          "referencedColumnNames": [
+            "sku"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "restrict"
+        },
+        "inventory_warehouse_id_foreign": {
+          "columnNames": [
+            "warehouse_id"
+          ],
+          "constraintName": "inventory_warehouse_id_foreign",
+          "localTableName": "public.inventory",
+          "referencedTableName": "public.warehouse",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "restrict"
+        }
+      },
+      "nativeEnums": {
+        "reservation_status": {
+          "name": "reservation_status",
+          "schema": "public",
+          "items": [
+            "pending",
+            "confirmed",
+            "cancelled",
+            "expired"
+          ]
+        },
+        "warehouse_event_type": {
+          "name": "warehouse_event_type",
+          "schema": "public",
+          "items": [
+            "received",
+            "shipped"
+          ]
+        }
+      },
+      "comment": null
+    },
+    {
+      "columns": {
+        "sku": {
+          "name": "sku",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        }
+      },
+      "name": "product",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "sku"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "product_pkey",
+          "unique": true,
+          "primary": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "reservation_status": {
+          "name": "reservation_status",
+          "schema": "public",
+          "items": [
+            "pending",
+            "confirmed",
+            "cancelled",
+            "expired"
+          ]
+        },
+        "warehouse_event_type": {
+          "name": "warehouse_event_type",
+          "schema": "public",
+          "items": [
+            "received",
+            "shipped"
+          ]
+        }
+      },
+      "comment": null
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int8",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "shop_id": {
+          "name": "shop_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": true,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "external_order_id": {
+          "name": "external_order_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "status": {
+          "name": "status",
+          "type": "reservation_status",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "'pending'",
+          "comment": null,
+          "enumItems": [
+            "pending",
+            "confirmed",
+            "cancelled",
+            "expired"
+          ],
+          "mappedType": "unknown",
+          "nativeEnumName": "reservation_status"
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "request_key": {
+          "name": "request_key",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "expired_at": {
+          "name": "expired_at",
+          "type": "timestamptz(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": "CURRENT_TIMESTAMP",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        }
+      },
+      "name": "reservation",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "reservation_pkey",
+          "unique": true,
+          "primary": true
+        },
+        {
+          "columnNames": [
+            "shop_id",
+            "request_key"
+          ],
+          "composite": true,
+          "constraint": true,
+          "keyName": "reservation_shop_id_request_key_unique",
+          "unique": true,
+          "primary": false
+        },
+        {
+          "columnNames": [
+            "status",
+            "expired_at"
+          ],
+          "composite": true,
+          "constraint": false,
+          "keyName": "reservation_status_expired_at_index",
+          "unique": false,
+          "primary": false
+        },
+        {
+          "columnNames": [
+            "warehouse_id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "reservation_warehouse_id_index",
+          "unique": false,
+          "primary": false
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "reservation_warehouse_id_foreign": {
+          "columnNames": [
+            "warehouse_id"
+          ],
+          "constraintName": "reservation_warehouse_id_foreign",
+          "localTableName": "public.reservation",
+          "referencedTableName": "public.warehouse",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "restrict"
+        }
+      },
+      "nativeEnums": {
+        "reservation_status": {
+          "name": "reservation_status",
+          "schema": "public",
+          "items": [
+            "pending",
+            "confirmed",
+            "cancelled",
+            "expired"
+          ]
+        },
+        "warehouse_event_type": {
+          "name": "warehouse_event_type",
+          "schema": "public",
+          "items": [
+            "received",
+            "shipped"
+          ]
+        }
+      },
+      "comment": null
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int8",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "reservation_id": {
+          "name": "reservation_id",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": true,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        }
+      },
+      "name": "reservation_item",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "reservation_item_pkey",
+          "unique": true,
+          "primary": true
+        },
+        {
+          "columnNames": [
+            "product_id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "reservation_item_product_id_index",
+          "unique": false,
+          "primary": false
+        },
+        {
+          "columnNames": [
+            "reservation_id",
+            "product_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "keyName": "reservation_item_reservation_id_product_id_unique",
+          "unique": true,
+          "primary": false
+        }
+      ],
+      "checks": [
+        {
+          "name": "reservation_item_quantity_positive",
+          "columnName": "quantity",
+          "definition": "CHECK ((quantity > 0))",
+          "expression": "quantity > 0"
+        }
+      ],
+      "foreignKeys": {
+        "reservation_item_product_id_foreign": {
+          "columnNames": [
+            "product_id"
+          ],
+          "constraintName": "reservation_item_product_id_foreign",
+          "localTableName": "public.reservation_item",
+          "referencedTableName": "public.product",
+          "referencedColumnNames": [
+            "sku"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "restrict"
+        },
+        "reservation_item_reservation_id_foreign": {
+          "columnNames": [
+            "reservation_id"
+          ],
+          "constraintName": "reservation_item_reservation_id_foreign",
+          "localTableName": "public.reservation_item",
+          "referencedTableName": "public.reservation",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "reservation_status": {
+          "name": "reservation_status",
+          "schema": "public",
+          "items": [
+            "pending",
+            "confirmed",
+            "cancelled",
+            "expired"
+          ]
+        },
+        "warehouse_event_type": {
+          "name": "warehouse_event_type",
+          "schema": "public",
+          "items": [
+            "received",
+            "shipped"
+          ]
+        }
+      },
+      "comment": null
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int8",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        }
+      },
+      "name": "warehouse",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "warehouse_pkey",
+          "unique": true,
+          "primary": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "reservation_status": {
+          "name": "reservation_status",
+          "schema": "public",
+          "items": [
+            "pending",
+            "confirmed",
+            "cancelled",
+            "expired"
+          ]
+        },
+        "warehouse_event_type": {
+          "name": "warehouse_event_type",
+          "schema": "public",
+          "items": [
+            "received",
+            "shipped"
+          ]
+        }
+      },
+      "comment": null
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int8",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "type": {
+          "name": "type",
+          "type": "warehouse_event_type",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [
+            "received",
+            "shipped"
+          ],
+          "mappedType": "unknown",
+          "nativeEnumName": "warehouse_event_type"
+        },
+        "external_event_id": {
+          "name": "external_event_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": true,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "sku": {
+          "name": "sku",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "quantity_delta": {
+          "name": "quantity_delta",
+          "type": "int8",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 64,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "bigint"
+        },
+        "occurred_at": {
+          "name": "occurred_at",
+          "type": "timestamptz(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamptz(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": "CURRENT_TIMESTAMP",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        }
+      },
+      "name": "warehouse_event",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "warehouse_event_pkey",
+          "unique": true,
+          "primary": true
+        },
+        {
+          "columnNames": [
+            "sku"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "warehouse_event_sku_index",
+          "unique": false,
+          "primary": false
+        },
+        {
+          "columnNames": [
+            "warehouse_id",
+            "external_event_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "keyName": "warehouse_event_warehouse_id_external_event_id_unique",
+          "unique": true,
+          "primary": false
+        }
+      ],
+      "checks": [
+        {
+          "name": "warehouse_event_quantity_delta_valid",
+          "columnName": "type",
+          "definition": "CHECK ((((type = 'received'::warehouse_event_type) AND (quantity_delta > 0)) OR ((type = 'shipped'::warehouse_event_type) AND (quantity_delta < 0))))",
+          "expression": "((type = 'received'::warehouse_event_type) AND (quantity_delta > 0)) OR ((type = 'shipped'::warehouse_event_type) AND (quantity_delta < 0))"
+        }
+      ],
+      "foreignKeys": {
+        "warehouse_event_sku_foreign": {
+          "columnNames": [
+            "sku"
+          ],
+          "constraintName": "warehouse_event_sku_foreign",
+          "localTableName": "public.warehouse_event",
+          "referencedTableName": "public.product",
+          "referencedColumnNames": [
+            "sku"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "restrict"
+        },
+        "warehouse_event_warehouse_id_foreign": {
+          "columnNames": [
+            "warehouse_id"
+          ],
+          "constraintName": "warehouse_event_warehouse_id_foreign",
+          "localTableName": "public.warehouse_event",
+          "referencedTableName": "public.warehouse",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "restrict"
+        }
+      },
+      "nativeEnums": {
+        "reservation_status": {
+          "name": "reservation_status",
+          "schema": "public",
+          "items": [
+            "pending",
+            "confirmed",
+            "cancelled",
+            "expired"
+          ]
+        },
+        "warehouse_event_type": {
+          "name": "warehouse_event_type",
+          "schema": "public",
+          "items": [
+            "received",
+            "shipped"
+          ]
+        }
+      },
+      "comment": null
+    }
+  ],
+  "nativeEnums": {
+    "reservation_status": {
+      "name": "reservation_status",
+      "schema": "public",
+      "items": [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "expired"
+      ]
+    },
+    "warehouse_event_type": {
+      "name": "warehouse_event_type",
+      "schema": "public",
+      "items": [
+        "received",
+        "shipped"
+      ]
+    }
+  }
+}

@@ -19,6 +19,8 @@ services:
   backend:
     build: .
     init: true
+    env_file:
+      - .env
     depends_on:
       database:
         condition: service_healthy
@@ -35,6 +37,8 @@ services:
 
   database:
     image: postgres:16-alpine
+    ports:
+      - '${POSTGRES_PORT}:5432'
     env_file:
       - .env
     volumes:
